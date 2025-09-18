@@ -126,11 +126,11 @@ export default function Chatbot() {
       </Button>
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetContent className="flex flex-col w-full sm:max-w-md">
-          <SheetHeader className="pr-10">
+          <SheetHeader>
             <SheetTitle className="font-headline flex items-center gap-2">
               <Bot className="text-primary"/> AI Assistant
             </SheetTitle>
-            <SheetDescription className="sr-only">A chatbot to help you with your queries.</SheetDescription>
+            <SheetDescription>A chatbot to help you with your queries about the platform.</SheetDescription>
           </SheetHeader>
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="flex items-center gap-2 p-2 border-b">
@@ -204,5 +204,3 @@ export default function Chatbot() {
     </>
   );
 }
-
-    

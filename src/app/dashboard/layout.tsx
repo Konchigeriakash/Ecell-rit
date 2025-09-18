@@ -1,6 +1,7 @@
+
 import Header from "@/components/header";
 import MainNav from "@/components/main-nav";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { PanelLeft } from "lucide-react";
 import Image from "next/image";
@@ -37,6 +38,8 @@ export default function DashboardLayout({
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="sm:max-w-xs p-0">
+               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+               <SheetDescription className="sr-only">Main navigation links for the dashboard.</SheetDescription>
                <div className="flex h-[60px] items-center border-b px-6">
                   <div className="flex items-center gap-2">
                     <Image src="https://iic.viit.ac.in/images/Hackathon/SIH-logo.png" alt="SIH Logo" width={32} height={32} />
