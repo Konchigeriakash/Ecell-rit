@@ -4,7 +4,7 @@
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { Bot, Mic, Send, X, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetDescription } from "@/components/ui/sheet";
 import { multilingualChatbot } from "@/ai/flows/multilingual-chatbot-support";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -130,6 +130,7 @@ export default function Chatbot() {
             <SheetTitle className="font-headline flex items-center gap-2">
               <Bot className="text-primary"/> AI Assistant
             </SheetTitle>
+            <SheetDescription className="sr-only">A chatbot to help you with your queries.</SheetDescription>
           </SheetHeader>
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="flex items-center gap-2 p-2 border-b">
@@ -203,3 +204,5 @@ export default function Chatbot() {
     </>
   );
 }
+
+    

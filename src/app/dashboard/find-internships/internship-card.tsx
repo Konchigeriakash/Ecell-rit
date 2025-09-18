@@ -119,6 +119,8 @@ function InternshipCard({ internship }: { internship: Internship }) {
 
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
+           <DialogTitle className="font-headline text-2xl sr-only">{internship.title}</DialogTitle>
+           <DialogDescription className="text-base sr-only">{internship.companyName}</DialogDescription>
            <div className="flex items-start gap-4">
                 <Image 
                     src={`https://picsum.photos/seed/${internship.companyName.replace(/\s/g, '')}/60/60`} 
@@ -128,8 +130,8 @@ function InternshipCard({ internship }: { internship: Internship }) {
                     data-ai-hint="logo abstract"
                 />
                 <div className="flex-1">
-                    <DialogTitle className="font-headline text-2xl">{internship.title}</DialogTitle>
-                    <DialogDescription className="text-base">{internship.companyName}</DialogDescription>
+                    <h3 className="font-headline text-2xl">{internship.title}</h3>
+                    <p className="text-base text-muted-foreground">{internship.companyName}</p>
                 </div>
                 {internship.matchScore && (
                     <Badge variant={internship.matchScore > 80 ? 'default' : 'secondary'} className="text-lg flex gap-1 items-center">
@@ -186,3 +188,5 @@ function InternshipCard({ internship }: { internship: Internship }) {
 }
     
 export default React.memo(InternshipCard);
+
+    
