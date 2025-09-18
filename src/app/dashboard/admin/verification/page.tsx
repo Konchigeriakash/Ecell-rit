@@ -16,6 +16,24 @@ import {
 } from "@/services/adminService";
 import { Skeleton } from "@/components/ui/skeleton";
 
+
+const dummyCompanies = [
+    { id: 'comp1', name: 'Innovate Solutions Ltd.', details: { pan: 'ABCDE1234F', gst: '29ABCDE1234F1Z5' }, trustScore: 45, reason: 'New company with low online presence and mismatch in address between PAN and GST records.' },
+    { id: 'comp2', name: 'TechWiz India', details: { pan: 'FGHIJ5678K', gst: '27FGHIJ5678K1Z9' }, trustScore: 62, reason: 'Company name is very generic. Domain registered only 3 months ago.' },
+    { id: 'comp3', name: 'GreenEnergy Logistics', details: { pan: 'KLMNO9012P', gst: '36KLMNO9012P1Z3' }, trustScore: 33, reason: 'Directors have been associated with previously flagged companies. High risk profile.' },
+    { id: 'comp4', name: 'QuickServe Logistics', details: { pan: 'PQRST3456Q', gst: '21PQRST3456Q1Z1' }, trustScore: 55, reason: 'Address provided matches multiple other businesses. Unclear physical location.' },
+    { id: 'comp5', name: 'Global Exports Inc.', details: { pan: 'UVWXY7890R', gst: '07UVWXY7890R1Z2' }, trustScore: 25, reason: 'Verification documents appear to be digitally altered. Significant flags raised by AI.' },
+];
+
+const dummyInternships = [
+    { id: 'int1', title: 'Data Science Intern', company: 'Innovate Solutions Ltd.', reason: 'Stipend offered is significantly below market average for this role, which is a common tactic for fraudulent listings.' },
+    { id: 'int2', title: 'Marketing Assistant (Urgent Hiring)', company: 'Unknown Corp', reason: 'Posting company is not registered on the platform. Internship description is vague and uses high-pressure language.' },
+    { id: 'int3', title: 'Web Developer', company: 'TechWiz India', reason: 'Job description was copy-pasted from another popular internship platform. Possible plagiarism or scam.' },
+    { id: 'int4', title: 'Social Media Manager', company: 'Creative Minds Agency', reason: 'Requires candidates to pay a deposit for a "training kit". This is a violation of platform policy.' },
+    { id: 'int5', title: 'React Native Developer', company: 'MobileFirst Apps', reason: 'The required skills do not match the job title. AI suggests this might be a bait-and-switch post.' },
+];
+
+
 export default function AdminVerificationPage() {
     const { toast } = useToast();
     const [companies, setCompanies] = useState<any[]>([]);
@@ -28,12 +46,9 @@ export default function AdminVerificationPage() {
             try {
                 setIsLoadingCompanies(true);
                 setIsLoadingInternships(true);
-                const [companyReqs, internshipReqs] = await Promise.all([
-                    getCompanyVerificationRequests(),
-                    getInternshipVerificationRequests()
-                ]);
-                setCompanies(companyReqs);
-                setInternships(internshipReqs);
+                // Using dummy data
+                setCompanies(dummyCompanies);
+                setInternships(dummyInternships);
             } catch (error) {
                 toast({
                     variant: "destructive",
@@ -51,10 +66,10 @@ export default function AdminVerificationPage() {
     const handleAction = async (type: "company" | "internship", id: string, action: "approve" | "reject") => {
         try {
             if (type === 'company') {
-                await handleCompanyVerification(id, action);
+                // await handleCompanyVerification(id, action);
                 setCompanies(companies.filter(c => c.id !== id));
             } else {
-                await handleInternshipVerification(id, action);
+                // await handleInternshipVerification(id, action);
                 setInternships(internships.filter(i => i.id !== id));
             }
 
