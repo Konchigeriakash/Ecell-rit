@@ -212,16 +212,14 @@ export default function CompanyApplicationsPage() {
                                             </DialogTrigger>
                                             <DialogContent className="sm:max-w-md">
                                                 <DialogHeader>
-                                                    <DialogTitle className="text-2xl font-bold font-headline sr-only">Candidate Profile</DialogTitle>
-                                                    <DialogDescription className="sr-only">Detailed profile for {candidate.name}</DialogDescription>
                                                     <div className="flex items-center gap-4">
                                                         <Avatar className="h-16 w-16">
                                                             <AvatarImage src={`https://api.dicebear.com/8.x/initials/svg?seed=${candidate.name}`} alt={candidate.name} />
                                                             <AvatarFallback>{candidate.name.substring(0, 2)}</AvatarFallback>
                                                         </Avatar>
                                                         <div>
-                                                            <h3 className="text-2xl font-bold font-headline">{candidate.name}</h3>
-                                                            <p className="text-muted-foreground">AI Match Score: {candidate.matchScore}%</p>
+                                                            <DialogTitle className="text-2xl font-bold font-headline">{candidate.name}</DialogTitle>
+                                                            <DialogDescription>AI Match Score: {candidate.matchScore}%</DialogDescription>
                                                         </div>
                                                     </div>
                                                 </DialogHeader>
@@ -280,5 +278,3 @@ export default function CompanyApplicationsPage() {
     </div>
   );
 }
-
-    
