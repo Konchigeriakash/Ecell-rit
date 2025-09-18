@@ -211,6 +211,8 @@ export default function CompanyApplicationsPage() {
                                                 <Button variant="outline">View Profile</Button>
                                             </DialogTrigger>
                                             <DialogContent className="sm:max-w-md">
+                                                <DialogTitle className="font-bold font-headline text-2xl sr-only">{candidate.name}'s Profile</DialogTitle>
+                                                <DialogDescription className="sr-only">A detailed view of the candidate's profile including qualifications, skills, and AI reasoning.</DialogDescription>
                                                 <DialogHeader>
                                                     <div className="flex items-center gap-4">
                                                         <Avatar className="h-16 w-16">
@@ -218,8 +220,8 @@ export default function CompanyApplicationsPage() {
                                                             <AvatarFallback>{candidate.name.substring(0, 2)}</AvatarFallback>
                                                         </Avatar>
                                                         <div>
-                                                            <DialogTitle className="text-2xl font-bold font-headline">{candidate.name}</DialogTitle>
-                                                            <DialogDescription>AI Match Score: {candidate.matchScore}%</DialogDescription>
+                                                            <h3 className="text-2xl font-bold font-headline">{candidate.name}</h3>
+                                                            <p className="text-muted-foreground">AI Match Score: {candidate.matchScore}%</p>
                                                         </div>
                                                     </div>
                                                 </DialogHeader>
