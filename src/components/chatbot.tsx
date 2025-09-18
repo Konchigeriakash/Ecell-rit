@@ -101,8 +101,8 @@ export default function Chatbot() {
       console.error("Chatbot error:", chatError);
       const errorId = (Date.now() + 1).toString();
       let errorText = "Sorry, I couldn't process that. Please try again.";
-      if (chatError?.message?.includes('503 Service Unavailable') || chatError?.message?.includes('quota')) {
-        errorText = "The AI service is currently overloaded or has reached its quota. Please try again in a few moments.";
+      if (chatError?.message?.includes('503 Service Unavailable') || chatError?.message?.includes('overloaded')) {
+        errorText = "The AI service is currently overloaded. Please try again in a few moments.";
       }
       const errorMessage: Message = {
         id: errorId,
