@@ -1,10 +1,15 @@
 import Header from "@/components/header";
 import MainNav from "@/components/main-nav";
-import Chatbot from "@/components/chatbot";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { PanelLeft } from "lucide-react";
 import Image from "next/image";
+import dynamic from 'next/dynamic';
+
+const Chatbot = dynamic(() => import('@/components/chatbot'), {
+  ssr: false,
+});
+
 
 export default function DashboardLayout({
   children,

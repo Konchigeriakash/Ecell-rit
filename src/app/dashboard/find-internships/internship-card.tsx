@@ -1,6 +1,7 @@
 
 "use client";
 
+import React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ type Internship = {
 
 const APPLY_THRESHOLD = 70;
 
-export default function InternshipCard({ internship }: { internship: Internship }) {
+function InternshipCard({ internship }: { internship: Internship }) {
   const { toast } = useToast();
   const [applications, setApplications] = useLocalStorage<any[]>('tracked-applications', []);
   
@@ -183,5 +184,5 @@ export default function InternshipCard({ internship }: { internship: Internship 
     </Dialog>
   );
 }
-
     
+export default React.memo(InternshipCard);

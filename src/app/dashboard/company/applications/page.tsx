@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,10 +10,20 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Sparkles, User, GraduationCap, Briefcase, XCircle, CheckCircle } from "lucide-react";
 import { shortlistCandidates, ShortlistCandidatesOutput } from "@/ai/flows/candidate-shortlisting";
 import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getCompanyInternships, getCompanyStudents } from "@/services/companyService";
 import { Skeleton } from "@/components/ui/skeleton";
+import dynamic from "next/dynamic";
+
+const Dialog = dynamic(() => import('@/components/ui/dialog').then(mod => mod.Dialog), { ssr: false });
+const DialogContent = dynamic(() => import('@/components/ui/dialog').then(mod => mod.DialogContent), { ssr: false });
+const DialogHeader = dynamic(() => import('@/components/ui/dialog').then(mod => mod.DialogHeader), { ssr: false });
+const DialogTitle = dynamic(() => import('@/components/ui/dialog').then(mod => mod.DialogTitle), { ssr: false });
+const DialogDescription = dynamic(() => import('@/components/ui/dialog').then(mod => mod.DialogDescription), { ssr: false });
+const DialogTrigger = dynamic(() => import('@/components/ui/dialog').then(mod => mod.DialogTrigger), { ssr: false });
+const DialogFooter = dynamic(() => import('@/components/ui/dialog').then(mod => mod.DialogFooter), { ssr: false });
+const DialogClose = dynamic(() => import('@/components/ui/dialog').then(mod => mod.DialogClose), { ssr: false });
+
 
 export default function CompanyApplicationsPage() {
   const [internships, setInternships] = useState<any[]>([]);
@@ -195,59 +205,61 @@ export default function CompanyApplicationsPage() {
                                 </TableCell>
                                 <TableCell className="text-sm text-muted-foreground max-w-sm">{candidate.reasoning}</TableCell>
                                 <TableCell className="text-right">
-                                    <Dialog>
-                                        <DialogTrigger asChild>
-                                            <Button variant="outline">View Profile</Button>
-                                        </DialogTrigger>
-                                        <DialogContent className="sm:max-w-md">
-                                            <DialogHeader>
-                                                <div className="flex items-center gap-4">
-                                                    <Avatar className="h-16 w-16">
-                                                        <AvatarImage src={`https://api.dicebear.com/8.x/initials/svg?seed=${candidate.name}`} alt={candidate.name} />
-                                                        <AvatarFallback>{candidate.name.substring(0, 2)}</AvatarFallback>
-                                                    </Avatar>
-                                                    <div>
-                                                        <DialogTitle className="text-2xl font-bold font-headline">{candidate.name}</DialogTitle>
-                                                        <DialogDescription>AI Match Score: {candidate.matchScore}%</DialogDescription>
+                                    <Suspense fallback={<Button variant="outline" disabled>Loading...</Button>}>
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button variant="outline">View Profile</Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="sm:max-w-md">
+                                                <DialogHeader>
+                                                    <div className="flex items-center gap-4">
+                                                        <Avatar className="h-16 w-16">
+                                                            <AvatarImage src={`https://api.dicebear.com/8.x/initials/svg?seed=${candidate.name}`} alt={candidate.name} />
+                                                            <AvatarFallback>{candidate.name.substring(0, 2)}</AvatarFallback>
+                                                        </Avatar>
+                                                        <div>
+                                                            <DialogTitle className="text-2xl font-bold font-headline">{candidate.name}</DialogTitle>
+                                                            <DialogDescription>AI Match Score: {candidate.matchScore}%</DialogDescription>
+                                                        </div>
+                                                    </div>
+                                                </DialogHeader>
+                                                <div className="py-4 space-y-6">
+                                                    <div className="space-y-2">
+                                                        <h4 className="font-semibold flex items-center gap-2"><GraduationCap className="h-4 w-4 text-muted-foreground" /> Qualifications</h4>
+                                                        <p className="text-muted-foreground">{candidate.qualifications}</p>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <h4 className="font-semibold flex items-center gap-2"><Briefcase className="h-4 w-4 text-muted-foreground" /> Experience</h4>
+                                                        <p className="text-muted-foreground">{candidate.experience || 'N/A'}</p>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <h4 className="font-semibold">Skills</h4>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {candidate.skills.map(skill => (
+                                                                <Badge key={skill} variant="secondary">{skill}</Badge>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-2">
+                                                        <h4 className="font-semibold">AI Reasoning</h4>
+                                                        <p className="text-sm text-muted-foreground p-3 bg-muted/50 rounded-md">{candidate.reasoning}</p>
                                                     </div>
                                                 </div>
-                                            </DialogHeader>
-                                            <div className="py-4 space-y-6">
-                                                <div className="space-y-2">
-                                                    <h4 className="font-semibold flex items-center gap-2"><GraduationCap className="h-4 w-4 text-muted-foreground" /> Qualifications</h4>
-                                                    <p className="text-muted-foreground">{candidate.qualifications}</p>
-                                                </div>
-                                                 <div className="space-y-2">
-                                                    <h4 className="font-semibold flex items-center gap-2"><Briefcase className="h-4 w-4 text-muted-foreground" /> Experience</h4>
-                                                    <p className="text-muted-foreground">{candidate.experience || 'N/A'}</p>
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <h4 className="font-semibold">Skills</h4>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {candidate.skills.map(skill => (
-                                                            <Badge key={skill} variant="secondary">{skill}</Badge>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <h4 className="font-semibold">AI Reasoning</h4>
-                                                    <p className="text-sm text-muted-foreground p-3 bg-muted/50 rounded-md">{candidate.reasoning}</p>
-                                                </div>
-                                            </div>
-                                            <DialogFooter className="gap-2">
-                                                <DialogClose asChild>
-                                                    <Button type="button" variant="outline" onClick={() => handleCandidateAction(candidate.name, 'reject')}>
-                                                        <XCircle className="mr-2 h-4 w-4"/> Reject
-                                                    </Button>
-                                                </DialogClose>
-                                                <DialogClose asChild>
-                                                    <Button type="button" onClick={() => handleCandidateAction(candidate.name, 'offer')}>
-                                                        <CheckCircle className="mr-2 h-4 w-4"/> Offer Internship
-                                                    </Button>
-                                                </DialogClose>
-                                            </DialogFooter>
-                                        </DialogContent>
-                                    </Dialog>
+                                                <DialogFooter className="gap-2">
+                                                    <DialogClose asChild>
+                                                        <Button type="button" variant="outline" onClick={() => handleCandidateAction(candidate.name, 'reject')}>
+                                                            <XCircle className="mr-2 h-4 w-4"/> Reject
+                                                        </Button>
+                                                    </DialogClose>
+                                                    <DialogClose asChild>
+                                                        <Button type="button" onClick={() => handleCandidateAction(candidate.name, 'offer')}>
+                                                            <CheckCircle className="mr-2 h-4 w-4"/> Offer Internship
+                                                        </Button>
+                                                    </DialogClose>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </Suspense>
                                 </TableCell>
                             </TableRow>
                         ))}
