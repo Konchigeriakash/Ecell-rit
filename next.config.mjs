@@ -1,0 +1,26 @@
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'wpblogassets.paytm.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'iic.viit.ac.in',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.dicebear.com',
+      },
+    ],
+  },
+};
+
+export default nextConfig;
