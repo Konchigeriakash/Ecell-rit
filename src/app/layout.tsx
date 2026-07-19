@@ -1,11 +1,22 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  title: "AI for Internships | Ministry of Corporate Affairs",
-  description: "AI-powered platform to match students with internships.",
+  title: "AI-Powered Internship Matching Platform | E-Cell RIT & MCA",
+  description: "Next-generation, government-backed AI internship matching platform for the Ministry of Corporate Affairs, engineered by E-Cell Ramaiah Institute of Technology.",
+  keywords: ["AI Internship", "E-Cell RIT", "Ministry of Corporate Affairs", "NextJS", "Internship Matcher", "Radix UI", "Tailwind CSS"],
 };
 
 export default function RootLayout({
@@ -14,21 +25,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
-      </head>
-      <body className="font-body antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
+    <html lang="en" className="h-full">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-full flex flex-col`}>
+        <ThemeProvider>
           {children}
-          <Toaster />
         </ThemeProvider>
       </body>
     </html>

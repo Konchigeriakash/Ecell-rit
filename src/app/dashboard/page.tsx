@@ -1,149 +1,205 @@
-
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Briefcase, Lightbulb, Search, Target, Award, BookOpen } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { useLocalStorage } from "@/hooks/use-local-storage";
+import { StudentView } from "@/components/dashboard/student-view";
+import { CompanyView } from "@/components/dashboard/company-view";
+import { InstituteView } from "@/components/dashboard/institute-view";
+import { AdminView } from "@/components/dashboard/admin-view";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Chatbot } from "@/components/chatbot";
+import { LayoutDashboard, Award, Sparkles, BookOpen, LogOut, Shield, Building, GraduationCap, ChevronDown } from "lucide-react";
+
+type Role = "student" | "company" | "institute" | "admin";
 
 export default function Dashboard() {
-  const [applications] = useLocalStorage('tracked-applications', []);
-  const [profile] = useLocalStorage('user-profile', {});
-  const [profileCompletion, setProfileCompletion] = useState(0);
-  const [applicationCount, setApplicationCount] = useState(0);
+  const [activeRole, setActiveRole] = useState<Role>("student");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  // Sync role with localStorage or query parameters if set
   useEffect(() => {
-    // This will run on the client after hydration
-    const calculateProfileCompletion = () => {
-      if (!profile) return 0;
-      const fields = ['name', 'email', 'phone', 'age', 'address', 'skills', 'qualifications', 'interests', 'experience', 'locationPreference'];
-      const filledFields = fields.filter(field => {
-        const value = profile[field as keyof typeof profile];
-        return value && String(value).trim() !== '';
-      });
-      return Math.round((filledFields.length / fields.length) * 100);
-    };
+    const savedRole = localStorage.getItem("activeRole") as Role | null;
+    if (savedRole) {
+      setActiveRole(savedRole);
+    }
+  }, []);
 
-    setProfileCompletion(calculateProfileCompletion());
-    setApplicationCount(applications.length);
-  }, [profile, applications]);
+  const handleRoleChange = (role: Role) => {
+    setActiveRole(role);
+    localStorage.setItem("activeRole", role);
+    setIsDropdownOpen(false);
+  };
 
+  const getRoleLabel = (role: Role) => {
+    switch (role) {
+      case "student": return "Student Node";
+      case "company": return "Corporate Node";
+      case "institute": return "Institute Node";
+      case "admin": return "National Admin";
+    }
+  };
+
+  const getRoleIcon = (role: Role) => {
+    switch (role) {
+      case "student": return <GraduationCap className="w-4 h-4" />;
+      case "company": return <Building className="w-4 h-4" />;
+      case "institute": return <BookOpen className="w-4 h-4" />;
+      case "admin": return <Shield className="w-4 h-4" />;
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-8">
-      <header>
-        <h1 className="text-3xl font-bold font-headline">Welcome, Student!</h1>
-        <p className="text-muted-foreground">Here's your career journey at a glance.</p>
-      </header>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Link href="/dashboard/find-internships?autoSearch=true">
-          <Card className="hover:bg-muted/50 transition-colors">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Recommended Internships</CardTitle>
-              <Search className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">12</div>
-              <p className="text-xs text-muted-foreground">Based on your profile</p>
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/dashboard/skill-analysis">
-          <Card className="hover:bg-muted/50 transition-colors">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Skills to Develop</CardTitle>
-              <Lightbulb className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">5</div>
-              <p className="text-xs text-muted-foreground">To match your desired roles</p>
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/dashboard/my-applications">
-          <Card className="hover:bg-muted/50 transition-colors">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Applications Sent</CardTitle>
-              <Briefcase className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{applicationCount}</div>
-              <p className="text-xs text-muted-foreground">Track their status now</p>
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/dashboard/my-profile">
-          <Card className="hover:bg-muted/50 transition-colors">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Profile Completion</CardTitle>
-              <Target className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{profileCompletion}%</div>
-              <p className="text-xs text-muted-foreground">Complete it for better matches</p>
-            </CardContent>
-          </Card>
-        </Link>
-      </div>
-      <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="font-headline">Quick Actions</CardTitle>
-            <CardDescription>Get started with these common tasks.</CardDescription>
-          </CardHeader>
-          <CardContent className="grid sm:grid-cols-2 gap-4">
-              <Link href="/dashboard/find-internships">
-                 <div className="p-4 border rounded-lg hover:bg-muted cursor-pointer h-full">
-                  <Search className="h-6 w-6 text-primary mb-2"/>
-                  <h3 className="font-semibold">Find Internships</h3>
-                  <p className="text-sm text-muted-foreground">Search and filter opportunities.</p>
-                </div>
-              </Link>
-             <Link href="/dashboard/my-profile">
-                <div className="p-4 border rounded-lg hover:bg-muted cursor-pointer h-full">
-                  <Target className="h-6 w-6 text-primary mb-2"/>
-                  <h3 className="font-semibold">Update Your Profile</h3>
-                  <p className="text-sm text-muted-foreground">Keep your info current.</p>
-                </div>
-             </Link>
-             <Link href="/dashboard/skill-analysis">
-                <div className="p-4 border rounded-lg hover:bg-muted cursor-pointer h-full">
-                  <Lightbulb className="h-6 w-6 text-primary mb-2"/>
-                  <h3 className="font-semibold">Analyze Skill Gaps</h3>
-                  <p className="text-sm text-muted-foreground">Find areas to improve.</p>
-                </div>
-             </Link>
-             <Link href="/dashboard/my-applications">
-                <div className="p-4 border rounded-lg hover:bg-muted cursor-pointer h-full">
-                  <Briefcase className="h-6 w-6 text-primary mb-2"/>
-                  <h3 className="font-semibold">Track Applications</h3>
-                  <p className="text-sm text-muted-foreground">Monitor your progress.</p>
-                </div>
-             </Link>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-headline">Resources</CardTitle>
-            <CardDescription>Helpful articles and guides for your internship journey.</CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-             <Link href="/dashboard/resources" className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted">
-                <BookOpen className="h-5 w-5 text-accent"/>
-                <span className="text-sm font-medium">Resume Building Guide</span>
+    <div className="flex min-h-screen bg-background">
+      {/* Sidebar Navigation */}
+      <aside className="w-64 border-r border-border/80 bg-card hidden md:flex flex-col justify-between py-6 px-4">
+        <div className="space-y-8">
+          {/* Logo Brand */}
+          <div className="flex items-center gap-3 px-2">
+            <span className="p-2.5 bg-primary text-white rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 animate-pulse" />
+            </span>
+            <div>
+              <span className="font-extrabold text-sm text-foreground uppercase tracking-wider block">AI Internship</span>
+              <span className="text-[10px] text-muted-foreground font-semibold">E-Cell RIT Node</span>
+            </div>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="space-y-1">
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-primary/10 text-primary font-bold text-sm transition-all"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              <span>Core Workspace</span>
             </Link>
-             <Link href="/dashboard/resources" className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted">
-                <Award className="h-5 w-5 text-accent"/>
-                <span className="text-sm font-medium">Interview Preparation Tips</span>
-            </Link>
-             <Button variant="outline" className="mt-4" asChild>
-                <Link href="/dashboard/resources">View All Resources</Link>
-             </Button>
-          </CardContent>
-        </Card>
+            
+            <a
+              href="https://github.com/Konchigeriakash/Ecell-rit"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-850/50 text-muted-foreground hover:text-foreground font-semibold text-sm transition-all"
+            >
+              <Award className="w-4 h-4" />
+              <span>GitHub Repository</span>
+            </a>
+            
+            <a
+              href="#docs"
+              className="flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-850/50 text-muted-foreground hover:text-foreground font-semibold text-sm transition-all"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Guidelines docs</span>
+            </a>
+          </nav>
+        </div>
+
+        {/* Footer info & Logout */}
+        <div className="space-y-4">
+          <div className="glass p-3 rounded-xl border border-border/50 text-center">
+            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Verification Server</p>
+            <p className="text-xs text-emerald-500 font-bold mt-0.5 flex items-center justify-center gap-1.5">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping" /> Connected
+            </p>
+          </div>
+          
+          <Link
+            href="/"
+            className="flex items-center gap-3 px-3.5 py-3 rounded-xl hover:bg-red-500/10 text-muted-foreground hover:text-red-500 font-semibold text-sm transition-all cursor-pointer"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Sign Out Portal</span>
+          </Link>
+        </div>
+      </aside>
+
+      {/* Main Core Content Container */}
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* Workspace Header */}
+        <header className="h-20 border-b border-border/80 bg-card px-6 flex items-center justify-between z-20">
+          {/* Breadcrumbs & Title */}
+          <div>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground font-semibold">
+              <span>MCA AI Node</span>
+              <span>/</span>
+              <span>RIT Grid</span>
+              <span>/</span>
+              <span className="text-primary">{getRoleLabel(activeRole)}</span>
+            </div>
+            <h2 className="text-lg font-black mt-0.5 text-foreground">Interactive Portal Console</h2>
+          </div>
+
+          {/* Interactive controls */}
+          <div className="flex items-center gap-4">
+            {/* Dynamic Role Switcher Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="glass px-4 py-2 rounded-xl text-xs font-bold text-foreground border border-border flex items-center gap-2 transition-all hover:scale-102 cursor-pointer shadow"
+              >
+                {getRoleIcon(activeRole)}
+                <span>Switch Role</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`} />
+              </button>
+              
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 glass-card border border-border rounded-xl shadow-2xl py-1 z-30 animate-slide-up">
+                  <div className="px-3 py-1.5 text-[9px] text-muted-foreground font-bold uppercase tracking-wider border-b border-border/50">
+                    Select Portal Node
+                  </div>
+                  <button
+                    onClick={() => handleRoleChange("student")}
+                    className={`w-full text-left px-4 py-2.5 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
+                      activeRole === "student" ? "bg-primary/10 text-primary" : "hover:bg-slate-100 dark:hover:bg-slate-800 text-foreground"
+                    }`}
+                  >
+                    <GraduationCap className="w-4 h-4 text-primary" /> Student Dashboard
+                  </button>
+                  <button
+                    onClick={() => handleRoleChange("company")}
+                    className={`w-full text-left px-4 py-2.5 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
+                      activeRole === "company" ? "bg-primary/10 text-primary" : "hover:bg-slate-100 dark:hover:bg-slate-800 text-foreground"
+                    }`}
+                  >
+                    <Building className="w-4 h-4 text-indigo-500" /> Company Dashboard
+                  </button>
+                  <button
+                    onClick={() => handleRoleChange("institute")}
+                    className={`w-full text-left px-4 py-2.5 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
+                      activeRole === "institute" ? "bg-primary/10 text-primary" : "hover:bg-slate-100 dark:hover:bg-slate-800 text-foreground"
+                    }`}
+                  >
+                    <BookOpen className="w-4 h-4 text-emerald-500" /> Institute Dashboard
+                  </button>
+                  <button
+                    onClick={() => handleRoleChange("admin")}
+                    className={`w-full text-left px-4 py-2.5 text-xs font-semibold flex items-center gap-2 transition-colors cursor-pointer ${
+                      activeRole === "admin" ? "bg-primary/10 text-primary" : "hover:bg-slate-100 dark:hover:bg-slate-800 text-foreground"
+                    }`}
+                  >
+                    <Shield className="w-4 h-4 text-accent" /> Admin Control Node
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <ThemeToggle />
+          </div>
+        </header>
+
+        {/* Dynamic Center Work Area */}
+        <main className="flex-1 p-6 md:p-8 bg-slate-50/20 dark:bg-slate-900/5 overflow-y-auto">
+          <div className="max-w-7xl mx-auto animate-fade-in">
+            {activeRole === "student" && <StudentView />}
+            {activeRole === "company" && <CompanyView />}
+            {activeRole === "institute" && <InstituteView />}
+            {activeRole === "admin" && <AdminView />}
+          </div>
+        </main>
       </div>
+
+      {/* Floating AI Chatbot Assistant */}
+      <Chatbot />
     </div>
   );
 }
